@@ -24,25 +24,10 @@ import (
 
 func main() {
 	framework.NewServer().
-		RegisterObjectStore("example.io/object-store-plugin", newObjectStorePlugin).
-		RegisterVolumeSnapshotter("example.io/volume-snapshotter-plugin", newNoOpVolumeSnapshotterPlugin).
 		RegisterRestoreItemAction("example.io/restore-plugin", newRestorePlugin).
-		RegisterBackupItemAction("example.io/backup-plugin", newBackupPlugin).
 		Serve()
-}
-
-func newBackupPlugin(logger logrus.FieldLogger) (interface{}, error) {
-	return plugin.NewBackupPlugin(logger), nil
-}
-
-func newObjectStorePlugin(logger logrus.FieldLogger) (interface{}, error) {
-	return plugin.NewFileObjectStore(logger), nil
 }
 
 func newRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return plugin.NewRestorePlugin(logger), nil
-}
-
-func newNoOpVolumeSnapshotterPlugin(logger logrus.FieldLogger) (interface{}, error) {
-	return plugin.NewNoOpVolumeSnapshotter(logger), nil
 }
