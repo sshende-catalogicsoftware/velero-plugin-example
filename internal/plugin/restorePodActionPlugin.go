@@ -22,27 +22,29 @@ import (
 	"k8s.io/apimachinery/pkg/api/meta"
 )
 
-// RestorePlugin is a restore item action plugin for Velero
-type RestorePlugin struct {
+// RestorePodActionPlugin is a restore item action plugin for Velero
+type RestorePodActionPlugin struct {
 	log logrus.FieldLogger
 }
 
-// NewRestorePlugin instantiates a RestorePlugin.
-func NewRestorePlugin(log logrus.FieldLogger) *RestorePlugin {
-	return &RestorePlugin{log: log}
+// NewRestorePodActionPlugin instantiates a RestorePlugin.
+func NewRestorePodActionPlugin(log logrus.FieldLogger) *RestorePodActionPlugin {
+	return &RestorePodActionPlugin{log: log}
 }
 
 // AppliesTo returns information about which resources this action should be invoked for.
 // A RestoreItemAction's Execute function will only be invoked on items that match the returned
 // selector. A zero-valued ResourceSelector matches all resources.g
-func (p *RestorePlugin) AppliesTo() (velero.ResourceSelector, error) {
-	return velero.ResourceSelector{}, nil
+func (p *RestorePodActionPlugin) AppliesTo() (velero.ResourceSelector, error) {
+	return velero.ResourceSelector{
+		IncludedResources: []string{"pods"},
+	}, nil
 }
 
 // Execute allows the RestorePlugin to perform arbitrary logic with the item being restored,
 // in this case, setting a custom annotation on the item being restored.
-func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*velero.RestoreItemActionExecuteOutput, error) {
-	p.log.Info("Hello from my RestorePlugin!")
+func (p *RestorePodActionPlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*velero.RestoreItemActionExecuteOutput, error) {
+	p.log.Info("catalogicsoftware.com/offload-restore-pod-action-plugin!")
 
 	metadata, err := meta.Accessor(input.Item)
 	if err != nil {
@@ -54,7 +56,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		annotations = make(map[string]string)
 	}
 
-	annotations["velero.io/my-restore-plugin"] = "1"
+	annotations["catalogicsoftware.com/offload-restore-pod-action-plugin"] = "1"
 
 	metadata.SetAnnotations(annotations)
 

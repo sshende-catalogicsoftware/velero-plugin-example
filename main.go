@@ -24,10 +24,16 @@ import (
 
 func main() {
 	framework.NewServer().
-		RegisterRestoreItemAction("catalogicsoftware.com/offload-restore-plugin", newRestorePlugin).
-		Serve()
+		RegisterRestoreItemAction("catalogicsoftware.com/offload-restore-pvc-action-plugin", newRestorePvcActionPlugin).Serve()
+
+	framework.NewServer().
+		RegisterRestoreItemAction("catalogicsoftware.com/offload-restore-pod-action-plugin", newRestorePvcActionPlugin).Serve()
 }
 
-func newRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
-	return plugin.NewRestorePlugin(logger), nil
+func newRestorePvcActionPlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return plugin.NewRestorePvcActionPlugin(logger), nil
+}
+
+func newRestorePodActionPlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return plugin.NewRestorePodActionPlugin(logger), nil
 }
