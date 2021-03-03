@@ -17,21 +17,14 @@ limitations under the License.
 package main
 
 import (
+	plugin "catalogicsoftware.com/velero-plugin/internal/plugin/restore"
 	"github.com/sirupsen/logrus"
-	"github.com/vmware-tanzu/velero-plugin-example/internal/plugin"
 	"github.com/vmware-tanzu/velero/pkg/plugin/framework"
 )
 
 func main() {
 	framework.NewServer().
-		RegisterRestoreItemAction("catalogicsoftware.com/offload-restore-pvc-action-plugin", newRestorePvcActionPlugin).Serve()
-
-	framework.NewServer().
-		RegisterRestoreItemAction("catalogicsoftware.com/offload-restore-pod-action-plugin", newRestorePvcActionPlugin).Serve()
-}
-
-func newRestorePvcActionPlugin(logger logrus.FieldLogger) (interface{}, error) {
-	return plugin.NewRestorePvcActionPlugin(logger), nil
+		RegisterRestoreItemAction(plugin.RestorePodActionPluginName, newRestorePodActionPlugin).Serve()
 }
 
 func newRestorePodActionPlugin(logger logrus.FieldLogger) (interface{}, error) {
